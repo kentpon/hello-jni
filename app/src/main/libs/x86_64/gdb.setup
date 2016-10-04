@@ -1,3 +1,0 @@
-set solib-search-path D:/workspace/AndroidstudioProjects/hello-jni/app/src/main//obj/local/x86_64
-source D:/eclipse/android-ndk-r10d/prebuilt/common/gdb/common.setup
-directory D:/eclipse/android-ndk-r10d/platforms/android-21/arch-x86_64/usr/include D:/workspace/AndroidstudioProjects/hello-jni/app/src/main//jni D:/eclipse/android-ndk-r10d/sources/cxx-stl/system
