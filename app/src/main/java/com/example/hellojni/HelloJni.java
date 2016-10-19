@@ -20,7 +20,7 @@ public class HelloJni extends Activity
         tv.setText(t);
         setContentView(tv);
     }
-    private void callFromJni( String msg){
+    private void callFromJni( String msg) {
         Log.i(TAG,"callFromJni " + msg);
     }
     private boolean intArrayCallFromJni(int[] ints) {

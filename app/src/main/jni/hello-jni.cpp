@@ -70,7 +70,7 @@ jstring Java_com_example_hellojni_HelloJni_stringFromJNI(JNIEnv* env, jobject th
    #define ABI "unknown"
 #endif
 
-    char msg[] = "2Hello from JNI !  Compiled with ABI " ABI ".";
+    char msg[] = "Hello from JNI !  Compiled with ABI " ABI ".";
     jstring jMsg = env->NewStringUTF(msg);
 
     env->CallVoidMethod(thiz, mMethodID, jMsg);
@@ -113,17 +113,45 @@ jobject Java_com_example_hellojni_HelloJni_fooFromJni(JNIEnv* env, jobject thiz)
         LOGE("get object class fail");
         return NULL;
     }
+
     jmethodID mid = env->GetMethodID(mClass, "fooCallFromJni", "(Lcom/example/hellojni/HelloJni$Foo;)Lcom/example/hellojni/HelloJni$Foo;");
     if(mid == NULL ){
         LOGE("get fooCallFromJni MethodID fail");
         return NULL;
     }
-    jstring name = env->NewStringUTF("Kentpon");
+
     jobject jfoo = env->NewObject(fooClass, fooConstructorMethodID);
     jobject mObject = env->CallObjectMethod(thiz, mid, jfoo);
-    env->DeleteLocalRef(name);
-    env->DeleteLocalRef(jfoo);
 
+    jclass mObjectCalss = env->GetObjectClass(mObject);
+    if( !mClass ){
+        LOGE("get mObject class fail");
+        return NULL;
+    }
+
+    jfieldID fooNameFieldId = env->GetFieldID(mObjectCalss, "name", "Ljava/lang/String;");
+    if(fooNameFieldId == NULL ){
+        LOGE("get Foo.name FieldID fail");
+        return NULL;
+    }
+
+    jfieldID fooNumFieldId = env->GetFieldID(mObjectCalss, "num", "I");
+    if(fooNumFieldId == NULL ){
+        LOGE("get Foo.num FieldID fail");
+        return NULL;
+    }
+    jstring mObjectName = (jstring)env->GetObjectField(mObject, fooNameFieldId);
+    const char* name = env->GetStringUTFChars(mObjectName, 0);
+    jint num = env->GetIntField(mObject, fooNumFieldId);
+    LOGI("mObject Foo name: %s num: %d", name, num);
+
+    jstring jname = env->NewStringUTF("Kentpon");
+    env->SetObjectField(mObject, fooNameFieldId, jname);
+    env->SetIntField(mObject, fooNumFieldId, 1);
+
+    env->DeleteLocalRef(mObjectName);
+    env->DeleteLocalRef(jname);
+    env->DeleteLocalRef(jfoo);
 
     //jvm->DetachCurrentThread();
     return mObject;
